@@ -1,0 +1,27 @@
+<Configuration>
+  <!-- Basic Options -->
+  <Networking>Enable</Networking>
+  <MemoryInMB>8192</MemoryInMB>
+  <ClipboardRedirection>Enable</ClipboardRedirection>
+
+  <!-- Hardened settings -->
+  <ProtectedClient>Enable</ProtectedClient>
+  <VideoInput>Disable</VideoInput>
+  <AudioInput>Disable</AudioInput>
+  <PrinterRedirection>Disable</PrinterRedirection>
+  <vGPU>Disable</vGPU>
+
+  <!-- Map a folder from host -> sandbox -->
+  <MappedFolders>
+    <MappedFolder>
+      <HostFolder>C:\Users\uly\sandbox</HostFolder>
+      <SandboxFolder>C:\Users\WDAGUtilityAccount\Desktop\HostShared</SandboxFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+  </MappedFolders>
+
+  <!-- Simple, reliable launch: PowerShell runs your script directly, -WindowStyle Minimized -->
+  <LogonCommand>
+    <Command>powershell -ExecutionPolicy Bypass -NoProfile -File "C:\Users\WDAGUtilityAccount\Desktop\HostShared\SandboxStartup.ps1" -launchingSandbox</Command>
+  </LogonCommand>
+</Configuration>
