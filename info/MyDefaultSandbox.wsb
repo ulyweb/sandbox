@@ -14,7 +14,7 @@
   <!-- Map a folder from host -> sandbox -->
   <MappedFolders>
     <MappedFolder>
-      <HostFolder>C:\Users\uly\sandbox</HostFolder>
+      <HostFolder>C:\sandbox</HostFolder>
       <SandboxFolder>C:\Users\WDAGUtilityAccount\Desktop\HostShared</SandboxFolder>
       <ReadOnly>true</ReadOnly>
     </MappedFolder>
@@ -25,3 +25,4 @@
     <Command>powershell -ExecutionPolicy Bypass -NoProfile -File "C:\Users\WDAGUtilityAccount\Desktop\HostShared\SandboxStartup.ps1" -launchingSandbox</Command>
   </LogonCommand>
 </Configuration>
+
