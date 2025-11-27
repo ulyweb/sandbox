@@ -119,6 +119,8 @@ If (($null -ne $notepadPath) -or ($null -ne $notepadPlusPlusPath)) {
 try { Stop-Process -Name explorer -Force } catch { }
 Start-Process explorer.exe | Out-Null
 
+# ... (Lines before this remain the same) ...
+
 # ------------------------------- First-launch tasks ----------------------------
 # Gate heavier installs to the initial boot only (remove the if-block if you want them every run)
 if ($launchingSandbox) {
@@ -128,17 +130,10 @@ if ($launchingSandbox) {
     Start-PS -ScriptPath (Join-Path $base 'Install-Microsoft-Store.ps1')-Args '-launchingSandbox'
     Start-PS -ScriptPath (Join-Path $base 'Install-Winget.ps1')         -Args '-launchingSandbox'
 
-    #---------------------- New: Install Google Chrome via winget ----------------------
-    Write-Host "Starting silent installation of Google Chrome via winget..."
-
-    # Ensure winget is available and install Google Chrome
-    # Note: This command will wait for completion before moving to the next line.
-    try {
-        & winget install --id Google.Chrome --silent --accept-source-agreements --exact -e -Scope machine
-        Write-Host "Google Chrome installation command initiated successfully."
-    } catch {
-        Write-Warning "Failed to run winget install for Google Chrome. Ensure Install-Winget.ps1 completed successfully."
-    }
+    # ---------------------- New: Install Google Chrome via a separate script ----------------------
+    # Call the new script that handles the winget installation using the robust Start-PS function.
+    # This will open a new visible PowerShell window specifically for the Chrome install.
+    Start-PS -ScriptPath (Join-Path $base 'Install-Google-Chrome.ps1')  -Args '-launchingSandbox'
 
     # Open the shared folder so you can see everything right away
     Start-Process explorer.exe $base
