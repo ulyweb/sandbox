@@ -119,20 +119,32 @@ If (($null -ne $notepadPath) -or ($null -ne $notepadPlusPlusPath)) {
 try { Stop-Process -Name explorer -Force } catch { }
 Start-Process explorer.exe | Out-Null
 
-# ... (Lines before this remain the same) ...
+# ... (Script content before this line remains the same) ...
 
 # ------------------------------- First-launch tasks ----------------------------
 # Gate heavier installs to the initial boot only (remove the if-block if you want them every run)
 if ($launchingSandbox) {
-    # Optional helpers you mentioned — they’ll each open in their own visible PowerShell window
+    # Optional helpers — these can run in the background as they don't block subsequent steps.
     Start-PS -ScriptPath (Join-Path $base 'SetThemeDark.ps1')           -Args '-launchingSandbox'
     Start-PS -ScriptPath (Join-Path $base 'Install-VC-Redist.ps1')      -Args '-launchingSandbox'
     Start-PS -ScriptPath (Join-Path $base 'Install-Microsoft-Store.ps1')-Args '-launchingSandbox'
-    Start-PS -ScriptPath (Join-Path $base 'Install-Winget.ps1')         -Args '-launchingSandbox'
+    
+    # ---------------------- CRITICAL DEPENDENCY: Install Winget and WAIT ----------------------
+    Write-Host "Installing Winget and waiting for completion..."
+    $wingetInstallerPath = Join-Path $base 'Install-Winget.ps1'
+    
+    # We use Start-Process directly with the -Wait parameter to ensure the main script pauses
+    # until Winget is fully installed and available for the next command (Chrome install).
+    Start-Process -FilePath 'powershell.exe' -ArgumentList @(
+        '-ExecutionPolicy','Bypass',
+        '-File', $wingetInstallerPath,
+        '-launchingSandbox'
+    ) -Wait -NoNewWindow 
+    
+    Write-Host "Winget installation complete. Proceeding to Chrome installation."
 
-    # ---------------------- New: Install Google Chrome via a separate script ----------------------
-    # Call the new script that handles the winget installation using the robust Start-PS function.
-    # This will open a new visible PowerShell window specifically for the Chrome install.
+    # ---------------------- DEPENDENT INSTALL: Install Google Chrome ----------------------
+    # Call the Chrome installation script now that Winget is confirmed to be installed.
     Start-PS -ScriptPath (Join-Path $base 'Install-Google-Chrome.ps1')  -Args '-launchingSandbox'
 
     # Open the shared folder so you can see everything right away
