@@ -119,7 +119,8 @@ If (($null -ne $notepadPath) -or ($null -ne $notepadPlusPlusPath)) {
 try { Stop-Process -Name explorer -Force } catch { }
 Start-Process explorer.exe | Out-Null
 
-# ... (Script content before this line remains the same) ...
+
+# ... Update as of Nov 26, 2025 ...
 
 # ------------------------------- First-launch tasks ----------------------------
 # Gate heavier installs to the initial boot only (remove the if-block if you want them every run)
@@ -134,18 +135,18 @@ if ($launchingSandbox) {
     $wingetInstallerPath = Join-Path $base 'Install-Winget.ps1'
     
     # We use Start-Process directly with the -Wait parameter to ensure the main script pauses
-    # until Winget is fully installed and available for the next command (Chrome install).
+    # until Winget is fully installed and available.
     Start-Process -FilePath 'powershell.exe' -ArgumentList @(
         '-ExecutionPolicy','Bypass',
         '-File', $wingetInstallerPath,
         '-launchingSandbox'
     ) -Wait -NoNewWindow 
     
-    Write-Host "Winget installation complete. Proceeding to Chrome installation."
+    Write-Host "Winget installation complete. Proceeding to browser installation."
 
-    # ---------------------- DEPENDENT INSTALL: Install Google Chrome ----------------------
-    # Call the Chrome installation script now that Winget is confirmed to be installed.
-    Start-PS -ScriptPath (Join-Path $base 'Install-Google-Chrome.ps1')  -Args '-launchingSandbox'
+    # ---------------------- DEPENDENT INSTALL: Install Browsers ----------------------
+    # Call the new combined script that installs Chrome, Brave, and Firefox.
+    Start-PS -ScriptPath (Join-Path $base 'Install-Browsers.ps1')  -Args '-launchingSandbox'
 
     # Open the shared folder so you can see everything right away
     Start-Process explorer.exe $base
