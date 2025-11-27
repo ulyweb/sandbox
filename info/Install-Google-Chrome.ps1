@@ -7,7 +7,7 @@ Write-Host "Starting winget installation of Google Chrome..."
 Write-Host "This process may take a few minutes."
 
 # Run winget with verbose output to ensure it runs correctly and can be monitored
-& winget install --id Google.Chrome --silent --accept-source-agreements --exact -e -Scope machine
+& winget install --id Google.Chrome --silent --accept-source-agreements --exact -e --Scope machine --force
 if ($LASTEXITCODE -ne 0) {
     Write-Warning "Google Chrome installation failed with exit code $LASTEXITCODE."
 } else {
